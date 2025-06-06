@@ -93,6 +93,14 @@ namespace BGClient
             return _loadStatus;
         }
 
+        public AutomationExport Save2DImageFile(string FilePath, uint extNumber, uint frameBufferIndex, AExportFormat exportFormat)
+        {
+            IAExport _IExport = (IAExport)_clt.GetInterfaceX("AUTOMATION_EXPORT");
+            AutomationExport _exportStatus = _IExport.Save2DImage(FilePath, extNumber, frameBuffer, exportFormat);
+            Console.WriteLine("Exported");
+            return _exportStatus;
+        }
+
         public void Ultracal()
         {
             Console.WriteLine("BeamGage Automation: Ultracal Started");

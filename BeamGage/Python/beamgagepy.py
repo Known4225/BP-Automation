@@ -114,7 +114,11 @@ class BeamGagePy:
 
         # initialize control classes
         self.data_source = DataSource(self.beamgage)
+        self.processor = Processor(self.beamgage)
         self.save_load_setup = SaveLoadSetup(self.beamgage)
+        self.save_load_data = SaveLoadData(self.beamgage)
+        self.frame_buffer = FrameBuffer(self.beamgage)
+        self.export = Export(self.beamgage)
         self.partition = Partition(self.beamgage)
 
         # initialize results classes
@@ -132,7 +136,10 @@ class BeamGagePy:
             None:
         """
         del self.data_source
+        del self.processor
         del self.save_load_setup
+        del self.save_load_data
+        del self.export
         del self.partition
         del self.power_energy_results
         del self.spatial_results
@@ -511,6 +518,24 @@ class DataSource:
     def trigger_state(self, value: bool):
         self.beamgage.ExternalTrigger.TriggerIn = value
 
+class Processor:
+    """ A constructor used by BeamGagePy to wrap the IAProcessor interface
+        Normally managed by the BeamGagePy class.  It is not necessary to call this constructor directly.
+
+        Args:
+              bg_instance (Any): An AutomatedBeamGage instance
+        """
+
+    def __init__(self, bg_instance):
+        self.beamgage = bg_instance
+
+    @property
+    def ultracal_subtraction(self) -> bool:
+        return self.beamgage.Processor.UltracalSubtractionOn
+
+    @ultracal_subtraction.setter
+    def ultracal_subtraction(self, value: bool):
+        self.beamgage.Processor.UltracalSubtractionOn = value
 
 class SaveLoadSetup:
     """ A constructor used by BeamGagePy to wrap the IASaveLoadSetup interface
@@ -548,6 +573,21 @@ class SaveLoadSetup:
             self.beamgage.SaveLoadSetup.LoadSetup(filename)
         else:
             raise RuntimeError("Load Setup called while data source is Running")
+        
+class SaveLoadData:
+    def __init__(self, bg_instance):
+        self.beamgage = bg_instance
+
+    def save_data(self, filename, compressedFormat=True):
+        self.beamgage.SaveLoadData.SaveData(filename, compressedFormat)
+
+class FrameBuffer:
+    def __init__(self, bg_instance):
+        self.beamgage = bg_instance
+        self.current = 0.0
+    def update(self):
+        self.current = round(self.beamgage.FrameBuffer.Current)
+        
 
 class Export:
     """ A constructor used by BeamGagePy to wrap the IAExport interface
@@ -559,8 +599,10 @@ class Export:
 
     def __init__(self, bg_instance):
         self.beamgage = bg_instance
+        import Spiricon.Automation as SpA
+        self.spa = SpA
 
-    def save_image_2d(self, filename, ext_num, frame_buffer_index, export_format):
+    def save_image_2d(self, filename, frame_buffer_index, export_format):
         """ Saves a screenshot image of the 2D Beam Display.  The resulting image is not suitable for post process
          analysis.
 
@@ -572,7 +614,7 @@ class Export:
             source.
         """
         if self.beamgage.DataSource.Status != DataSourceStatus.Running:
-            self.beamgage.Export(filename, ext_num, frame_buffer_index, export_format)
+            self.beamgage.Export.Save2DImage(filename, 0, frame_buffer_index, self.spa.AExportFormat(export_format.value))
         else:
             raise RuntimeError("Export called while data source is Running")
 
