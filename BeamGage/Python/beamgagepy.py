@@ -718,7 +718,7 @@ class SpatialResults:
         self.centroid_location_x = 0.0
         self.centroid_location_y = 0.0
         self.peak_location_x = 0.0
-        self.peak_location_x = 0.0
+        self.peak_location_y = 0.0
         self.d_4sigma_x = 0.0
         self.d_4sigma_y = 0.0
         self.d_4sigma_dia = 0.0
@@ -754,7 +754,7 @@ class SpatialResults:
         self.centroid_location_x = round(self.beamgage.SpatialResults.CentroidX, self.precision)
         self.centroid_location_y = round(self.beamgage.SpatialResults.CentroidY, self.precision)
         self.peak_location_x = round(self.beamgage.SpatialResults.PeakLocationX, self.precision)
-        self.peak_location_x = round(self.beamgage.SpatialResults.PeakLocationY, self.precision)
+        self.peak_location_y = round(self.beamgage.SpatialResults.PeakLocationY, self.precision)
         self.d_4sigma_x = round(self.beamgage.SpatialResults.D4SigmaMajor, self.precision)
         self.d_4sigma_y = round(self.beamgage.SpatialResults.D4SigmaMinor, self.precision)
         self.d_4sigma_dia = round(self.beamgage.SpatialResults.D4SigmaDiameter, self.precision)
