@@ -788,7 +788,7 @@ class SpatialResults:
     def update_fast(self):
         self.centroid_location_x = round(self.beamgage.SpatialResults.CentroidX, self.precision)
         self.centroid_location_y = round(self.beamgage.SpatialResults.CentroidY, self.precision)
-        self.d_4sigma_y = round(self.beamgage.SpatialResults.D4SigmaMinor, self.precision)
+        self.d_4sigma_dia = round(self.beamgage.SpatialResults.D4SigmaDiameter, self.precision)
         self.cross_sectional_area = round(self.beamgage.SpatialResults.CrossSectionArea, self.precision)
 
     def disable(self, result_name):
